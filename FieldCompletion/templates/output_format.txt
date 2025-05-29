@@ -1,0 +1,30 @@
+return the results in the following format:
+    ```json
+    {{
+        "VulnFields": {{"Full": {fieldList}, "has": {list(has_fields[vuln_id].keys())}, "nohas": {list(nohas_fields[vuln_id].keys())}}}
+        "Title": "Vulnerability Title",
+        "Details": "Vulnerability Detailed Description",
+        "Weakness": [("CWE ID", "Description")],
+        "Severity": [{"level": "Severity level explicitly stated in the source", "cvss_vector": "CVSS base vector string if available", "score": 9.8}],
+        "AffectedComponents": [
+        {{
+            "vendor": "Vendor Name",
+            "product": "Affected Software or Product Name",
+            "module": "Affected Specific Package or Library Name",
+            "ecosystem": "Software Ecosystem Name",
+            "version": {{
+                "affected_range": [">=version1,<version2", "<version3"],
+                "affected_version": ["version4", "version5"]
+            }}
+        }}, {{...}}
+        ],
+        "References": ["Reference Link 1", "Reference Link 2"],
+        "Status": {{
+            "impact_info": "Impact information",
+            "solution_info": "Solution information", 
+            "exploit_info": {{"exploits": "Exploit information", "exploit_url": ["Exploit Link 1", "Exploit Link 2"]}},
+            "PoC_info": {{"PoC": "PoC information", "exploit_url": ["PoC Link 1", "PoC Link 2"]}},
+            "patch_info",: {{"patch": "Patch information", "patch_url": ["Patch Link 1", "Patch Link 2"]}},
+        }}
+    }}
+```

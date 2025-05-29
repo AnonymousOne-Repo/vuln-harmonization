@@ -1,0 +1,74 @@
+From the provided context:
+
+{{ known_info }}
+
+Please summarize and extract the following fields. Only include information that is explicitly mentioned. Do not fabricate:
+
+### Title
+**Steps**:
+1. If an explicit title exists, extract it as is.
+2. If absent, generate a title using the format: <Product> + <Vulnerability Type> (e.g., 'Apache Struts RCE Vulnerability').
+3. Limit the length to no more than 20 words.
+**Example**:
+```
+Nginx HTTP/2 Module Buffer Overflow
+```
+
+### impact_info
+**Steps**:
+1. Extract the direct impact, such as data leakage, service disruption, or privilege escalation.
+2. Include technical details such as attack vector (remote/local), trigger conditions.
+3. Avoid speculative descriptions (e.g., 'may cause...').
+**Example**:
+```
+Remote attackers can execute arbitrary code via crafted HTTP/2 requests.
+```
+
+### solution_info
+**Steps**:
+1. Prioritize official solutions (upgrade, patch, configuration changes).
+2. If unavailable, extract mitigation strategies (e.g., WAF rules, access controls).
+3. Mark temporary solutions explicitly as [Workaround].
+**Example**:
+```
+Upgrade to OpenSSL 3.0.7 or apply vendor patches. [Workaround] Disable TLSv1.3
+```
+
+### exploit_info
+**Steps**:
+1. Distinguish between Exploit (weaponized tool) and PoC (proof of concept).
+2. Extract exploit complexity: Attack Complexity (Low/High).
+3. Indicate exploit status: In the Wild / Theoretical.
+**Example**:
+```
+{
+  "exploits": "Public exploits available (Attack Complexity: Low)",
+  "exploit_url": ["https://github.com/exploit-db/12345"]
+}
+```
+
+### PoC_info
+**Steps**:
+1. Extract the PoC publishing platform (GitHub, ExploitDB).
+2. Indicate the level of technical detail: Code Snippet / Full Demo.
+**Example**:
+```
+{
+  "PoC": "PoC published on GitHub (Full Demo)",
+  "PoC_url": ["https://github.com/security/PoC"]
+}
+```
+
+### patch_info
+**Steps**:
+1. Extract patch type: Official Patch / Vendor Advisory.
+2. Indicate the source of the patch: GitHub Commit / Vendor Bulletin.
+**Example**:
+```
+{
+  "patch": "Fixed in GitHub commit a1b2c3d",
+  "patch_url": ["https://github.com/project/commit/a1b2c3d"]
+}
+```
+
+Leave any of these fields as null if no relevant info is available.

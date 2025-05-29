@@ -1,0 +1,51 @@
+You are provided with partial structured vulnerability data:
+
+{{ known_info }}
+
+Your task is to extract the following core fields, strictly following the rules below:
+
+### Extract Weakness and Severity:
+1. **Weakness**:
+   - Extract the CWE ID exactly as mentioned in the text (e.g., CWE-79).
+   - If no CWE ID is explicitly found, set Weakness as `null`.
+   - Do not infer or summarize; only extract explicit references.
+
+2. **Severity**:
+   - Extract the severity level exactly as stated in the text. This includes qualitative levels like "High", "Medium", "Critical", as well as full CVSS vector strings (e.g., "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H").
+   - Do not infer based on context or CVSS score; if not mentioned, leave as `null`.
+
+**Example**:
+```json
+"Weakness": [("CWE-79", "Cross-site Scripting")],
+"Severity": [{"level": "High", "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", "score": 9.8}]
+
+### Extract Affected Components:
+1. List all affected components with the following subfields:
+   - `vendor`, `product`, `module`, `ecosystem`, `edition`, `releases`, and `version`.
+
+2. Each distinct product, edition, or release should be recorded as a separate component entry.
+
+3. If any of the main identifiers (vendor, product, module, or ecosystem) is not explicitly mentioned, leave that field as `null`.
+
+4. **Version Handling**:
+   - Version ranges (e.g., "1.0 to 1.5", "prior to 2.3") should be converted to standard interval format:
+     - `">=1.0,<1.5"`, `"<2.3"` and stored in `affected_range`.
+   - Specific versions (e.g., "1.2.1", "1.3.0") should go to `affected_version`.
+   - Use regex to detect phrases like: "through", "prior to", "and earlier", "before", and map them accurately.
+   - `affected_range` must only contain symbolic intervals, while `affected_version` holds specific version numbers.
+
+**Example**:
+```json
+"AffectedComponents": [
+  {
+    "vendor": "Apache",
+    "product": "Struts",
+    "module": null,
+    "ecosystem": "Java",
+    "version": {
+      "affected_range": [">=2.0,<2.3"],
+      "affected_version": ["2.0.1", "2.0.5"]
+    }
+  }
+]
+```
