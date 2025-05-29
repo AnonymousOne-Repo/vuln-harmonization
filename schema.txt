@@ -1,0 +1,90 @@
+{
+  "vulnerability": {
+    "id": "string",                    // Vulnerability identifier, e.g., CVE ID, GHSA ID, or another unique identifier
+    "aliases": ["string"],             // Possible aliases for the vulnerability
+    "source": {
+      "discovery": "string",           // Discovery method, e.g., "EXTERNAL"
+      "identifier": "string"           // Source identifier, e.g., "audit@patchstack.com"
+    },
+    "description": {
+      "title": "string",               // Title or summary of the vulnerability
+      "details": "string"              // Technical description of the vulnerability
+    },
+    "weaknesses": [
+      {
+        "type": "string",              // Weakness type, e.g., "Primary" or "Secondary"
+        "cweId": "string",             // CWE ID, e.g., "CWE-79"
+        "description": "string"        // Description of the weakness
+      }
+    ],
+    "severity": {
+      "version": "string",             // CVSS version, e.g., "3.1"
+      "baseScore": "float",            // CVSS base score
+      "attackVector": "string",        // Attack vector, e.g., "NETWORK"
+      "baseSeverity": "string",        // Severity level, e.g., "MEDIUM"
+      "vectorString": "string",        // CVSS vector string
+      "confidentialityImpact": "string", // Impact on confidentiality
+      "integrityImpact": "string",     // Impact on integrity
+      "availabilityImpact": "string",  // Impact on availability
+      "userInteraction": "string",     // Whether user interaction is required
+      "attackComplexity": "string",    // Attack complexity
+      "privilegesRequired": "string",  // Privileges required
+      "scope": "string"                // Scope of the vulnerability
+    },
+    "time_info": {
+      "published": "string",           // Date when the vulnerability was published
+      "lastModified": "string",        // Last modified date
+      "datePublic": "string"           // Date when the vulnerability was publicly disclosed
+    },
+    "status": {
+      "impact_info": {
+        "impacts": "string",           // Description of the impact
+        "impactScore": "int"           // Impact score
+      },
+      "solution_info": "string",       // Solution or fix information
+      "exploit_info": {
+        "exploitable": "boolean",      // Whether exploitation is known
+        "exploits": "string",          // Description of known exploits
+        "exploit_url": ["string"],     // Links to exploit code or tools
+        "exploitabilityScore": "int"   // Exploitability score
+      },
+      "PoC_info": {
+        "PoC_available": "boolean",    // Whether a proof-of-concept (PoC) is available
+        "PoC": "string",               // Description of the PoC
+        "PoC_url": ["string"]          // URLs or references for the PoC
+      },
+      "patch_info": {
+        "patch_available": "boolean",  // Whether a patch is available
+        "patch_url": ["string"]        // External links or references to the patch
+      },
+      "report_status": "string"        // Reporting status, e.g., "Public", "Under Fix"
+    }
+  },
+  "affected_components": [
+    {
+      "component_name": "string",      // Name of the affected component
+      "vendor": "string",              // Vendor information
+      "package_name": "string",        // Package name
+      "ecosystem": "string",           // Ecosystem or platform the component belongs to
+      "repo_url": "string",            // Source repository URL
+      "platform": ["string"],          // Operating systems or platforms affected
+      "collectionURL": "string",       // Link to the component's collection or details
+      "defaultStatus": "string",       // Default affected status
+      "affected_versions": {
+        "version_range": "string",     // Range of affected versions
+        "version_list": ["string"]     // Specific affected version numbers
+      },
+      "unaffected_versions": {
+        "version_range": "string",     // Range of unaffected versions
+        "version_list": ["string"]     // Specific unaffected version numbers
+      }
+    }
+  ],
+  "references": [
+    {
+      "description": "string",         // Description of the reference
+      "tags": ["string"],              // Tags associated with the reference
+      "url": "string"                  // URL of the reference
+    }
+  ]
+}
