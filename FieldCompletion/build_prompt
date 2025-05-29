@@ -1,0 +1,24 @@
+from jinja2 import Template
+import os
+from utils.input_builder import build_known_info
+
+def generate_prompts(field_list, vuln_info_not_full):
+    prompt_set = {}
+    has_fields = {vid: v['has'] for vid, v in vuln_info_not_full.items()}
+    nohas_fields = {vid: v['nohas'] for vid, v in vuln_info_not_full.items()}
+    prompt_input = build_known_info(field_list, has_fields)
+
+    with open('prompt_module/templates/extract_core_info.txt') as f:
+        extract_core_template = Template(f.read())
+    with open('prompt_module/templates/summarize_status_info.txt') as f:
+        summarize_status_template = Template(f.read())
+    with open('prompt_module/templates/output_format.txt') as f:
+        output_format = Template(f.read())
+
+    for vuln_id in vuln_info_not_full:
+        known_info = prompt_input[vuln_id]['known_info']
+        core_prompt = extract_core_template.render(known_info=known_info)
+        status_prompt = summarize_status_template.render(known_info=known_info)
+        prompt_set[vuln_id] = core_prompt + "\n\n" + status_prompt + "\n\n" +  output_format
+
+    return prompt_set
