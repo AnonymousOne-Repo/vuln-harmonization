@@ -11,7 +11,7 @@ This repository supports:
 
 ```
 vuln-harmonization/
-├── FieldStandardization/   # Scripts for extracting and aligning fields across 16 vulnerability databases
+├── FieldStandardization/   # Scripts for extracting and aligning fields in raw data across 16 vulnerability databases
 ├── FieldCompletion/        # Prompt templates for completing missing vulnerability fields
 ├── schema.txt              # Unified field schema used for alignment across databases
 ├── README.md               # Project overview and instructions
