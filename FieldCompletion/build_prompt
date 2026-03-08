@@ -22,3 +22,4 @@ def generate_prompts(field_list, vuln_info_not_full):
         prompt_set[vuln_id] = core_prompt + "\n\n" + status_prompt + "\n\n" +  output_format
 
     return prompt_set
+
