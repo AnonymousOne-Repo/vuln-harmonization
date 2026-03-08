@@ -26,7 +26,7 @@ Our measurement study reveals three integration challenges:
 
 ```
 vuln-harmonization/
-├── databases/                   # Field extraction and standardization across 16 databases
+├── FieldStandardization/                   # Field extraction and standardization across 16 databases
 │   ├── field_map_more.py        # Field mapping and transformation logic
 │   ├── schema_template.py       # Unified 24-field schema definitions
 │   ├── stage1_definitions.py    # Stage 1: Field presence detection
