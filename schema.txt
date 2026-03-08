@@ -1,90 +1,297 @@
 {
   "vulnerability": {
-    "id": "string",                    // Vulnerability identifier, e.g., CVE ID, GHSA ID, or another unique identifier
-    "aliases": ["string"],             // Possible aliases for the vulnerability
+    // ============ Identification Information ============
+    "id": "string",                          // From ID_SCHEMA: Unique identifier such as CVE/GHSA/RUSTSEC/OSV
+    "aliases": ["string"],                   // From ALIASES_SCHEMA: List of alternative identifiers (other IDs)
+    "related": ["string"],                   // From RELATED_SCHEMA: List of related (non-equivalent) vulnerability IDs
+    
+    // ============ Source Information ============
     "source": {
-      "discovery": "string",           // Discovery method, e.g., "EXTERNAL"
-      "identifier": "string"           // Source identifier, e.g., "audit@patchstack.com"
+      "provider": "string",                  // From SOURCE_SCHEMA.provider: "CVE"|"NVD"|"OSV"|"RedHat"|"Wordfence"|"RustSec"|"Vulners"|"GitHub"|"Vendor"|"Internal" or null
+      "reporter": "string",                  // From SOURCE_SCHEMA.reporter: Individual/organization who reported
+      "category": "string"                   // From SOURCE_SCHEMA.category: "advisory"|"cve-record"|"database-entry"|"bug-bounty"|"exploit"|"scanner"|"news"|"blog"|"info"
     },
+    
+    // ============ Description Information ============
     "description": {
-      "title": "string",               // Title or summary of the vulnerability
-      "details": "string"              // Technical description of the vulnerability
+      "title": "string",                     // From TITLE_SCHEMA: One-sentence summary (1-256 chars)
+      "details": [                           // From DESCRIPTION_SCHEMA: Detailed description array (multi-language support)
+        {
+          "lang": "string",                  // BCP47 language code, default "en"
+          "value": "string",                 // Description text (≤4096 chars)
+          "format": "string",                // "text"|"markdown"|"html", default "text"
+          "media": [                         // Supporting media (e.g., screenshots, diagrams)
+            {
+              "type": "string",              // IANA media type
+              "base64": "boolean",           // Whether base64 encoded
+              "value": "string"              // Media content (≤16384 chars)
+            }
+          ]
+        }
+      ]
     },
-    "weaknesses": [
+    
+    // ============ Weakness Classification ============
+    "weaknesses": [                          // From WEAKNESSES_SCHEMA
       {
-        "type": "string",              // Weakness type, e.g., "Primary" or "Secondary"
-        "cweId": "string",             // CWE ID, e.g., "CWE-79"
-        "description": "string"        // Description of the weakness
+        "id": "string",                      // CWE ID (e.g., "CWE-79") or other taxonomy ID
+        "taxonomy": "string",                // "CWE"|"RustSecCategory"|"OWASP"|"Text"|"Other"
+        "name": "string",                    // Weakness name (optional)
+        "description": "string",             // Weakness description (optional)
+        "source": "string"                   // Source: "CVE"|"NVD"|"RedHat"|"Wordfence"|"RustSec"|"Vulners"|"Internal"
       }
     ],
-    "severity": {
-      "version": "string",             // CVSS version, e.g., "3.1"
-      "baseScore": "float",            // CVSS base score
-      "attackVector": "string",        // Attack vector, e.g., "NETWORK"
-      "baseSeverity": "string",        // Severity level, e.g., "MEDIUM"
-      "vectorString": "string",        // CVSS vector string
-      "confidentialityImpact": "string", // Impact on confidentiality
-      "integrityImpact": "string",     // Impact on integrity
-      "availabilityImpact": "string",  // Impact on availability
-      "userInteraction": "string",     // Whether user interaction is required
-      "attackComplexity": "string",    // Attack complexity
-      "privilegesRequired": "string",  // Privileges required
-      "scope": "string"                // Scope of the vulnerability
-    },
-    "time_info": {
-      "published": "string",           // Date when the vulnerability was published
-      "lastModified": "string",        // Last modified date
-      "datePublic": "string"           // Date when the vulnerability was publicly disclosed
-    },
-    "status": {
-      "impact_info": {
-        "impacts": "string",           // Description of the impact
-        "impactScore": "int"           // Impact score
-      },
-      "solution_info": "string",       // Solution or fix information
-      "exploit_info": {
-        "exploitable": "boolean",      // Whether exploitation is known
-        "exploits": "string",          // Description of known exploits
-        "exploit_url": ["string"],     // Links to exploit code or tools
-        "exploitabilityScore": "int"   // Exploitability score
-      },
-      "PoC_info": {
-        "PoC_available": "boolean",    // Whether a proof-of-concept (PoC) is available
-        "PoC": "string",               // Description of the PoC
-        "PoC_url": ["string"]          // URLs or references for the PoC
-      },
-      "patch_info": {
-        "patch_available": "boolean",  // Whether a patch is available
-        "patch_url": ["string"]        // External links or references to the patch
-      },
-      "report_status": "string"        // Reporting status, e.g., "Public", "Under Fix"
-    }
-  },
-  "affected_components": [
-    {
-      "component_name": "string",      // Name of the affected component
-      "vendor": "string",              // Vendor information
-      "package_name": "string",        // Package name
-      "ecosystem": "string",           // Ecosystem or platform the component belongs to
-      "repo_url": "string",            // Source repository URL
-      "platform": ["string"],          // Operating systems or platforms affected
-      "collectionURL": "string",       // Link to the component's collection or details
-      "defaultStatus": "string",       // Default affected status
-      "affected_versions": {
-        "version_range": "string",     // Range of affected versions
-        "version_list": ["string"]     // Specific affected version numbers
-      },
-      "unaffected_versions": {
-        "version_range": "string",     // Range of unaffected versions
-        "version_list": ["string"]     // Specific unaffected version numbers
+    
+    // ============ Severity Assessment ============
+    "severity": [                            // From SEVERITY_SCHEMA: Multi-source assessment array
+      {
+        "source": "string",                  // "CVE"|"NVD"|"OSV"|"RedHat"|"Wordfence"|"RustSec"|"Vulners"|"Ubuntu"|"Internal"
+        "scheme": "string",                  // "CVSS:2.0"|"CVSS:3.0"|"CVSS:3.1"|"CVSS:4.0"|"RedHat:ThreatSeverity"|"Ubuntu"|"Other"
+        "score": "float",                    // 0.0-10.0 (for CVSS), null for non-numeric
+        "vector": "string",                  // CVSS vector string (e.g., "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H")
+        "rating": "string",                  // "NONE"|"LOW"|"MEDIUM"|"HIGH"|"CRITICAL" or vendor-specific rating
+        
+        // Detailed dimensions parsed from vector (if CVSS 3.x)
+        "attackVector": "string",            // "NETWORK"|"ADJACENT"|"LOCAL"|"PHYSICAL"
+        "attackComplexity": "string",        // "LOW"|"HIGH"
+        "privilegesRequired": "string",      // "NONE"|"LOW"|"HIGH"
+        "userInteraction": "string",         // "NONE"|"REQUIRED"
+        "scope": "string",                   // "UNCHANGED"|"CHANGED"
+        "confidentialityImpact": "string",   // "NONE"|"LOW"|"HIGH"
+        "integrityImpact": "string",         // "NONE"|"LOW"|"HIGH"
+        "availabilityImpact": "string"       // "NONE"|"LOW"|"HIGH"
       }
+    ],
+    
+    // ============ Temporal Information ============
+    "time_info": {
+      "published": "string",                 // From PUBLISHED_SCHEMA: Initial disclosure time (ISO 8601 UTC)
+      "lastModified": "string",              // From MODIFIED_SCHEMA: Last modification time (ISO 8601 UTC)
+      "withdrawn": "string",                 // From WITHDRAWN_SCHEMA: Withdrawal time (if applicable)
+      "timeline": [                          // From TIMELINE_SCHEMA: Event timeline
+        {
+          "time": "string",                  // ISO 8601 UTC
+          "description": "string",           // Event description
+          "source": "string",                // Event source (optional)
+          "lang": "string"                   // BCP47 language code (optional)
+        }
+      ]
+    },
+    
+    // ============ Status Information ============
+    "status": {
+      "vuln_status": "string",               // From VULN_STATUS_SCHEMA: "published"|"rejected"|"analyzing"|"modified"|"unknown"
+      
+      // Impact Information
+      "impact_info": {
+        "impacts": [                         // From IMPACTS_SCHEMA
+          {
+            "source": "string",              // Provider of impact description
+            "lang": "string",                // BCP47 language code
+            "text": "string",                // Impact description (≤4096 chars)
+            "capec_id": "string"             // CAPEC ID (e.g., "CAPEC-123")
+          }
+        ],
+        "impactScore": "float"               // Impact score extracted from CVSS (if applicable)
+      },
+      
+      // Solution Information
+      "solution_info": {                     // From REMEDIATION_SCHEMA
+        "solutions": [
+          {
+            "lang": "string",                // BCP47 language code
+            "value": "string",               // Formal fix description (≤4096 chars)
+            "supportingMedia": [             // Supporting media (e.g., patch files)
+              {
+                "type": "string",            // IANA media type
+                "base64": "boolean",
+                "value": "string"
+              }
+            ]
+          }
+        ],
+        "workarounds": [                     // Temporary mitigation measures
+          {
+            "lang": "string",
+            "value": "string",
+            "supportingMedia": []
+          }
+        ],
+        "fixed_versions": ["string"]         // List of fixed versions (e.g., ["1.2.4", ">=2.0.1"])
+      },
+      
+      // Exploitation Information
+      "exploit_info": {                      // From EXPLOITATION_SCHEMA
+        "exploitable": "boolean",            // Whether known exploits exist
+        "exploits": [                        // List of exploit code/descriptions
+          {
+            "source": "string",              // Source
+            "lang": "string",
+            "text": "string",                // Exploit description (≤4096 chars)
+            "links": ["string"]              // Exploit code URL list
+          }
+        ],
+        "epss": [                            // EPSS prediction scores
+          {
+            "source": "string",              // e.g., "Vulners"|"FIRST-EPSS"
+            "cve_id": "string",
+            "score": "float",                // 0.0-1.0
+            "percentile": "float",           // 0.0-1.0
+            "last_updated": "string"         // YYYY-MM-DD
+          }
+        ],
+        "exploitabilityScore": "float"       // Exploitability score extracted from CVSS (if applicable)
+      },
+      
+      // PoC Information (filtered from exploit_info.exploits by PoC type)
+      "PoC_info": {
+        "PoC_available": "boolean",          // Whether PoC is available
+        "PoC": "string",                     // PoC description
+        "PoC_url": ["string"]                // PoC links (filtered from exploits[].links)
+      },
+      
+      // Patch Information (extracted from solution_info and references)
+      "patch_info": {
+        "patch_available": "boolean",        // Whether patch is available
+        "patch_url": ["string"]              // Patch links (URLs from references with tags containing "patch")
+      },
+      
+      "report_status": "string"              // Report status description (e.g., "Publicly Disclosed")
+    },
+    
+    // ============ Other Metadata ============
+    "vendor_comments": [                     // From VENDOR_COMMENTS_SCHEMA
+      {
+        "source": "string",                  // Vendor/organization name
+        "comment": "string",                 // Vendor statement
+        "time": "string"                     // ISO 8601 UTC
+      }
+    ],
+    
+    "acknowledgements": [                    // From ACKNOWLEDGEMENTS_SCHEMA
+      {
+        "name": "string",                    // Person/organization/tool name
+        "type": "string",                    // "finder"|"reporter"|"analyst"|"coordinator"|"remediation_developer"|"remediation_reviewer"|"remediation_verifier"|"tool"|"sponsor"|"other"
+        "contact": ["string"],               // Contact information (email/URL/social handles)
+        "lang": "string",
+        "uuid": "string"                     // UUID v4
+      }
+    ],
+    
+    "tags": [                                // From TAGS_SCHEMA
+      {
+        "description": "string",             // Tag text (1-256 chars)
+        "source": "string"                   // "CNA"|"NVD"|"OSV"|"RedHat"|"Wordfence"|"RustSec"|"Vulners"|"Internal", etc.
+      }
+    ],
+    
+    "copyrights": [                          // From COPYRIGHTS_SCHEMA
+      {
+        "source": "string",                  // "MITRE"|"Wordfence"|"RustSec"|"Vendor", etc.
+        "message": "string",                 // Explanatory text
+        "notice": "string",                  // Formal copyright notice
+        "license": "string",                 // SPDX license identifier
+        "license_url": "string"              // License URL
+      }
+    ],
+    
+    "primary_urls": [                        // From PRIMARY_URLS_SCHEMA
+      {
+        "source": "string",                  // "CVE"|"NVD"|"OSV"|"RedHat"|"Wordfence"|"RustSec"|"Vulners"|"GitHub"|"Vendor"|"Other"
+        "url": "string"                      // Primary detail page URL
+      }
+    ]
+  },
+  
+  // ============ Affected Components ============
+  "affected_components": [                   // From AFFECTED_SCHEMA
+    {
+      "component_name": "string",            // Component name (from product field)
+      "vendor": "string",                    // Vendor information
+      "package_name": "string",              // Package name (from package field)
+      "ecosystem": "string",                 // "upstream"|"npm"|"pypi"|"maven"|"nuget"|"crates.io"|"deb"|"rpm"|"docker"|"os"|"rust"|"wordpress-plugin"|"wordpress-theme"
+      "distribution": "string",              // Distribution identifier (e.g., "Debian:9"|"Ubuntu:20.04"|"upstream")
+      "repo_url": "string",                  // Git repository URL (from repo field)
+      "platform": ["string"],                // Runtime platforms (from platform field)
+      "os": ["string"],                      // Operating system list
+      "os_version": ["string"],              // OS version list
+      "arch": ["string"],                    // CPU architecture list
+      "collectionURL": "string",             // Component reference URL
+      "defaultStatus": "string",             // "affected"|"unaffected"|"unknown"
+      
+      // Affected Version Information
+      "affected_versions": {
+        "versions": ["string"],              // Exact affected version list (from versions field)
+        "version_range": [                   // Version range list (from version_range field)
+          {
+            "scheme": "string",              // "semver"|"rpm"|"deb"|"maven"|"git"|"ecosystem"|"custom"
+            "introduced": "string",          // Introduced version
+            "last_affected": "string",       // Last affected version
+            "fixed": "string",               // Fixed version
+            "limit": "string",               // Limit version
+            "status": "string"               // "affected"|"unaffected"|"unknown"
+          }
+        ]
+      },
+      
+      // Unaffected Version Information (extracted from version_range entries with status="unaffected")
+      "unaffected_versions": {
+        "versions": ["string"],
+        "version_range": [
+          {
+            "scheme": "string",
+            "introduced": "string",
+            "last_affected": "string",
+            "fixed": "string",
+            "limit": "string",
+            "status": "unaffected"
+          }
+        ]
+      },
+      
+      // Detailed Technical Information
+      "cpe": "string",                       // CPE 2.2 or 2.3
+      "purl": "string",                      // Package URL
+      "modules": ["string"],                 // Affected modules
+      "files": ["string"],                   // Affected source files
+      "functions": ["string"]                // Affected function/method names
     }
   ],
-  "references": [
+  
+  // ============ CPE Configurations (for precise matching) ============
+  "cpe_configurations": [                    // From CPE_CONFIGURATIONS_SCHEMA
     {
-      "description": "string",         // Description of the reference
-      "tags": ["string"],              // Tags associated with the reference
-      "url": "string"                  // URL of the reference
+      "source": "string",                    // "cna"|"nvd"|"vulners", etc.
+      "operator": "string",                  // "AND"|"OR"
+      "negate": "boolean",                   // Whether to negate
+      "nodes": [                             // Configuration node tree
+        {
+          "operator": "string",
+          "negate": "boolean",
+          "cpeMatch": [                      // CPE matching rules
+            {
+              "vulnerable": "boolean",       // true=vulnerable, false=exclusion
+              "criteria": "string",          // CPE 2.3 string
+              "matchCriteriaId": "string",   // UUID or ID
+              "versionStartIncluding": "string",
+              "versionStartExcluding": "string",
+              "versionEndIncluding": "string",
+              "versionEndExcluding": "string",
+              "provider": "string"
+            }
+          ],
+          "nodes": []                        // Nested nodes (recursive structure)
+        }
+      ]
+    }
+  ],
+  
+  // ============ Reference Links ============
+  "references": [                            // From REFERENCES_SCHEMA
+    {
+      "url": "string",                       // RFC3986 absolute URL
+      "name": "string",                      // Human-readable title (corresponds to target's description)
+      "tags": ["string"]                     // "exploit"|"patch"|"vendor-advisory"|"advisory"|"misc"
     }
   ]
 }
